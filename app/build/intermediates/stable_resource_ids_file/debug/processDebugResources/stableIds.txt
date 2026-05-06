@@ -1,0 +1,4 @@
+com.taskforcejackal.pteropanel:mipmap/ic_launcher_round = 0x7f020001
+com.taskforcejackal.pteropanel:style/AppTheme = 0x7f030000
+com.taskforcejackal.pteropanel:mipmap/ic_launcher = 0x7f020000
+com.taskforcejackal.pteropanel:color/ic_launcher_background = 0x7f010000
