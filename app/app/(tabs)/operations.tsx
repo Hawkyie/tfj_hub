@@ -5,29 +5,27 @@ import {
   Text,
 } from 'react-native';
 
-import OperationCard from '../../components/OperationCard';
 import { router } from 'expo-router';
-
-const operations = [
-  {
-    id: 1,
-    title: 'Operation Iron Spear',
-    date: 'Saturday • 1900 BST',
-    description:
-      'NATO forces conduct a raid against insurgent weapon caches in the region.',
-    type: 'Operation',
-  },
-  {
-    id: 2,
-    title: 'Operation Silent Dagger',
-    date: 'Sunday • 1800 BST',
-    description:
-      'TFJ reconnaissance teams gather intelligence ahead of a major assault.',
-    type: 'Operation',
-  },
-];
+import OperationCard from '../../components/OperationCard';
+import { useEffect, useState } from 'react';
+import { api } from '../../services/api';
 
 export default function OperationsScreen() {
+  const [operations, setOperations] = useState<any[]>([]);
+
+useEffect(() => {
+  const fetchOperations = async () => {
+    try {
+      const response = await api.get('/operations');
+      console.log(response.data);
+setOperations(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.error('Failed to fetch operations', error);
+    }
+  };
+
+  fetchOperations();
+}, []);
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Operations</Text>
@@ -37,26 +35,25 @@ export default function OperationsScreen() {
       </Text>
 
       <ScrollView style={styles.content}>
-        {operations.map((operation) => (
-          <OperationCard
-            key={operation.id}
-            title={operation.title}
-            date={operation.date}
-            description={operation.description}
-            type={operation.type}
-            onPress={() =>
-              router.push({
-                pathname: '/operation-details',
-                params: {
-                  title: operation.title,
-                  date: operation.date,
-                  description: operation.description,
-                },
-              })
-            }
+  {operations.map((operation) => (
+  <OperationCard
+    id={operation.id}
+    key={operation.id}
+    title={operation.title}
+    date={operation.date}
+    description={operation.description}
+    type={operation.type}
+    onPress={() =>
+      router.push({
+        pathname: '/operation-details',
+        params: {
+          id: operation.id.toString(),
+        },
+      })
+    }
   />
-          ))}
-      </ScrollView>
+))}
+</ScrollView>
     </SafeAreaView>
   );
 }

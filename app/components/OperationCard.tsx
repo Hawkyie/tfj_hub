@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { attendance } from '../data/attendance';
 
 import {
   StyleSheet,
@@ -8,21 +9,35 @@ import {
 } from 'react-native';
 
 type OperationCardProps = {
+  id: number;
   title: string;
   date: string;
   description: string;
   type: string;
+  onPress: () => void;
 };
 
 export default function OperationCard({
+  id,
   title,
   date,
   description,
   type,
+  onPress,
 }: OperationCardProps) {
-  const [attending, setAttending] = useState(false);
+  const [attending, setAttending] = useState(
+  attendance[id] || false
+);
+
+useEffect(() => {
+  attendance[id] = attending;
+}, [attending]);
 
   return (
+  <TouchableOpacity
+    activeOpacity={0.9}
+    onPress={onPress}
+  >
     <View style={styles.card}>
       <Text style={styles.badge}>{type}</Text>
 
@@ -41,13 +56,17 @@ export default function OperationCard({
           styles.attendButton,
           attending && styles.attendButtonActive,
         ]}
-        onPress={() => setAttending(!attending)}
+        onPress={(event) => {
+  event.stopPropagation();
+  setAttending(!attending);
+}}
       >
         <Text style={styles.buttonText}>
           {attending ? 'Cancel Attendance' : 'Mark Attending'}
         </Text>
       </TouchableOpacity>
     </View>
+  </TouchableOpacity>
   );
 }
 
